@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-sdk tools:overrideLibrary="android.support.v17.leanback" />
 
     <!-- Set android.software.leanback to false, so the APK will be available to both
     TV and regular devices. -->
@@ -38,7 +39,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/UAmpAppTheme"
-        android:banner="@drawable/banner_tv">
+        android:banner="@drawable/banner_tv"
+        >
 
         <meta-data
             android:name="com.google.android.gms.car.application"

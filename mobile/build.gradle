@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId "net.africahomepage.mp3africa"
-        minSdkVersion 17
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 2
         versionName "1.1"
@@ -63,4 +63,9 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.2.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
+
+    //AWS
+    compile('com.amazonaws:aws-android-sdk-s3:2.2.11')
+    compile('com.amazonaws:aws-android-sdk-core:2.2.11')
+    compile('com.amazonaws:aws-android-sdk-cognito:2.2.11')
 }
