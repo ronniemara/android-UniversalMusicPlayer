@@ -23,6 +23,14 @@ import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.text.TextUtils;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.AWSConfiguration;
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.amazonaws.regions.Regions;
+import com.whitecloud.mp3api.MPAfricaClient;
+import com.whitecloud.mp3api.model.Empty;
+
 import net.africahomepage.mp3africa.R;
 import net.africahomepage.mp3africa.utils.LogHelper;
 
@@ -61,11 +69,28 @@ public class MusicPlayerActivity extends BaseActivity
 
         initializeToolbar();
         initializeFromParams(savedInstanceState, getIntent());
+        initializeApi();
 
         // Only check if a full screen player is needed on the first time:
         if (savedInstanceState == null) {
             startFullScreenActivityIfNeeded(getIntent());
         }
+    }
+
+    private void initializeApi() {
+        // Use CognitoCachingCredentialsProvider to provide AWS credentials
+// for the ApiClientFactory
+        AWSCredentialsProvider credenetialsProvider = new CognitoCachingCredentialsProvider(
+                this,          // activity context
+                AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
+                AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
+        );
+        ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credenetialsProvider);
+        // create a client
+        final MPAfricaClient client = factory.build(MPAfricaClient.class);
+        // Invoke your trackGet method
+        Empty output = client.trackGet();
+
     }
 
     @Override

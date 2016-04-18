@@ -68,4 +68,6 @@ dependencies {
     compile('com.amazonaws:aws-android-sdk-s3:2.2.11')
     compile('com.amazonaws:aws-android-sdk-core:2.2.11')
     compile('com.amazonaws:aws-android-sdk-cognito:2.2.11')
+    compile 'com.amazonaws:aws-android-sdk-apigateway-core:2.2.6'
+    compile project(path: ':Whitecloud-mp3api-1.0.0')
 }

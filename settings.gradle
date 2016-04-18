@@ -1,1 +1,1 @@
-include ':mobile'
+include ':mobile', ':Whitecloud-mp3api-1.0.0'
