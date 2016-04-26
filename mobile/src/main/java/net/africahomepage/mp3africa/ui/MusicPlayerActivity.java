@@ -27,7 +27,7 @@ import android.util.Log;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.AWSConfiguration;
+
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
 import com.whitecloud.mp3africasdk.MPAfricaClient;
@@ -86,8 +86,8 @@ public class MusicPlayerActivity extends BaseActivity
 // for the ApiClientFactory
         AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 this,          // activity context
-                AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
-                AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
+                "us-east-1:6d54f99d-7587-40d5-8a15-1fb02a6fafaa", // Cognito identity pool id
+                Regions.US_EAST_1 // region of Cognito identity pool
         );
         ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
         // create a client
@@ -102,8 +102,7 @@ public class MusicPlayerActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(TrackModel trackModel) {
-
-            Log.d(TAG, trackModel.getArtist());
+            	Log.d(TAG, trackModel.getArtist());
             }
         }.execute();
 
