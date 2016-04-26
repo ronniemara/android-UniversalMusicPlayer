@@ -18,18 +18,21 @@ package net.africahomepage.mp3africa.ui;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.AWSConfiguration;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
-import com.whitecloud.mp3api.MPAfricaClient;
-import com.whitecloud.mp3api.model.Empty;
+import com.whitecloud.mp3africasdk.MPAfricaClient;
+import com.whitecloud.mp3africasdk.model.TrackModel;
+
 
 import net.africahomepage.mp3africa.R;
 import net.africahomepage.mp3africa.utils.LogHelper;
@@ -59,6 +62,7 @@ public class MusicPlayerActivity extends BaseActivity
         "net.africahomepage.mp3africa.CURRENT_MEDIA_DESCRIPTION";
 
     private Bundle mVoiceSearchParams;
+    private TrackModel mTrackModel = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,16 +84,30 @@ public class MusicPlayerActivity extends BaseActivity
     private void initializeApi() {
         // Use CognitoCachingCredentialsProvider to provide AWS credentials
 // for the ApiClientFactory
-        AWSCredentialsProvider credenetialsProvider = new CognitoCachingCredentialsProvider(
+        AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 this,          // activity context
                 AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
                 AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
         );
-        ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credenetialsProvider);
+        ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
         // create a client
         final MPAfricaClient client = factory.build(MPAfricaClient.class);
-        // Invoke your trackGet method
-        Empty output = client.trackGet();
+
+
+        new AsyncTask<Void, Void,TrackModel>() {
+            @Override
+            protected TrackModel doInBackground(Void... params) {
+                return client.trackGet();
+            }
+
+            @Override
+            protected void onPostExecute(TrackModel trackModel) {
+
+            Log.d(TAG, trackModel.getArtist());
+            }
+        }.execute();
+
+
 
     }
 
