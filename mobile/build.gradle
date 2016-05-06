@@ -63,12 +63,5 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-    //AWS
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.11'
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.11'
-    compile 'com.amazonaws:aws-android-sdk-cognito:2.2.11'
-    compile 'com.amazonaws:aws-android-sdk-apigateway-core:2.2.6'
-    //gson
-    //    compile 'com.google.code.gson:gson:2.6.2'
-    compile project(':Whitecloud-mp3africa-1.0.6')
+    compile project(':Whitecloud-mp3africa-1.1.8')
 }

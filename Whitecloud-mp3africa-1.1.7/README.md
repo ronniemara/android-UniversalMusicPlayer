@@ -13,7 +13,7 @@ mvn install
 This will install the generated client to your local Maven repository.
 
 # Use it in your project
-Copy Whitecloud-mp3africa-1.0.6.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
+Copy Whitecloud-mp3africa-1.1.7.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
 
 You can initialize the SDK using the `ApiClientFactory` object.
 

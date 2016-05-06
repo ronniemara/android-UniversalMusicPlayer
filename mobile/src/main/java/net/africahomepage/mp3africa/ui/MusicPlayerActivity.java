@@ -30,8 +30,8 @@ import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
-import com.whitecloud.mp3africasdk.MPAfricaClient;
 import com.whitecloud.mp3africasdk.model.TrackModel;
+import com.whitecloud.mp3africasdk.MPAfricaClient;
 
 
 import net.africahomepage.mp3africa.R;
@@ -83,20 +83,26 @@ public class MusicPlayerActivity extends BaseActivity
 
     private void initializeApi() {
         // Use CognitoCachingCredentialsProvider to provide AWS credentials
-// for the ApiClientFactory
-        AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+	// for the ApiClientFactory
+        final AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 this,          // activity context
                 "us-east-1:6d54f99d-7587-40d5-8a15-1fb02a6fafaa", // Cognito identity pool id
                 Regions.US_EAST_1 // region of Cognito identity pool
         );
-        ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
-        // create a client
-        final MPAfricaClient client = factory.build(MPAfricaClient.class);
-
 
         new AsyncTask<Void, Void,TrackModel>() {
             @Override
             protected TrackModel doInBackground(Void... params) {
+                ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
+                // create a client
+                final MPAfricaClient client = factory.build(MPAfricaClient.class);
+
+                try {
+                    TrackModel model = client.trackGet();
+                }catch(Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
                 return client.trackGet();
             }
 
@@ -105,9 +111,6 @@ public class MusicPlayerActivity extends BaseActivity
             	Log.d(TAG, trackModel.getArtist());
             }
         }.execute();
-
-
-
     }
 
     @Override

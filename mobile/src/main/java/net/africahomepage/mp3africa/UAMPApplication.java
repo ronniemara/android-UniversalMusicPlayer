@@ -18,7 +18,7 @@ package net.africahomepage.mp3africa;
 import android.app.Application;
 
 import net.africahomepage.mp3africa.ui.FullScreenPlayerActivity;
-import com.amazonaws.mobile.AWSMobileClient;
+
 
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
@@ -40,7 +40,7 @@ public class UAMPApplication extends Application {
                         .enableDebug()
                         .setTargetActivity(FullScreenPlayerActivity.class)
                         .build());
-        AWSMobileClient.initializeMobileClientIfNecessary(getApplicationContext());
+
 
     }
 }
