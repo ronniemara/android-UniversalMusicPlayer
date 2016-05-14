@@ -16,8 +16,19 @@
 
 package net.africahomepage.mp3africa.model;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v4.media.MediaMetadataCompat;
+import android.util.Log;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.amazonaws.regions.Regions;
+import com.whitecloud.mp3africasdk.MPAfricaClient;
+import com.whitecloud.mp3africasdk.model.TrackModel;
+
+import net.africahomepage.mp3africa.AWSConfiguration;
 import net.africahomepage.mp3africa.utils.LogHelper;
 
 import org.json.JSONArray;
@@ -152,5 +163,43 @@ public class RemoteJSONSource implements MusicProviderSource {
                 }
             }
         }
+    }
+
+    private JSONObject getTracksFromApi() {
+        initializeApi();
+    }
+
+    private void initializeApi() {
+        // Use CognitoCachingCredentialsProvider to provide AWS credentials
+        // for the ApiClientFactory
+        final AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                ApplicationContextProvider.getContext() ,          // activity context
+                AWSConfiguration.IDENTITY_ID, // Cognito identity pool id
+                Regions.US_EAST_1 // region of Cognito identity pool
+        );
+
+        new AsyncTask<Void, Void, TrackModel>() {
+            @Override
+            protected TrackModel doInBackground(Void... params) {
+                ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
+                // create a client
+                final MPAfricaClient client = factory.build(MPAfricaClient.class);
+
+                TrackModel model = null;
+                try {
+                    model = client.trackGet();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+                return model;
+            }
+
+            @Override
+            protected void onPostExecute(TrackModel trackModel) {
+
+                Log.d(TAG, trackModel.getArtist());
+            }
+        }.execute();
     }
 }

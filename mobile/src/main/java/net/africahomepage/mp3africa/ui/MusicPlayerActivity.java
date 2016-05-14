@@ -82,7 +82,7 @@ public class MusicPlayerActivity extends BaseActivity
 
         initializeToolbar();
         initializeFromParams(savedInstanceState, getIntent());
-        initializeApi();
+
 //
         // Only check if a full screen player is needed on the first time:
         if (savedInstanceState == null) {
@@ -93,39 +93,7 @@ public class MusicPlayerActivity extends BaseActivity
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private void initializeApi() {
-        // Use CognitoCachingCredentialsProvider to provide AWS credentials
-        // for the ApiClientFactory
-        final AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                this,          // activity context
-                "us-east-1:6d54f99d-7587-40d5-8a15-1fb02a6fafaa", // Cognito identity pool id
-                Regions.US_EAST_1 // region of Cognito identity pool
-        );
 
-        new AsyncTask<Void, Void, TrackModel>() {
-            @Override
-            protected TrackModel doInBackground(Void... params) {
-                ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
-                // create a client
-                final MPAfricaClient client = factory.build(MPAfricaClient.class);
-
-                TrackModel model = null;
-                try {
-                    model = client.trackGet();
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-
-                return model;
-            }
-
-            @Override
-            protected void onPostExecute(TrackModel trackModel) {
-
-                Log.d(TAG, trackModel.getArtist());
-            }
-        }.execute();
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
