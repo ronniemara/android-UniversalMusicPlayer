@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId "net.africahomepage.mp3africa"
-        minSdkVersion 13
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 2
         versionName "1.1"
@@ -33,6 +33,8 @@ android {
     }
     lintOptions {
         abortOnError true
+        disable 'TrustAllX509TrustManager'
+
     }
     buildTypes {
         release {
@@ -43,6 +45,7 @@ android {
 }
 
 repositories {
+    mavenCentral()
     flatDir {
         dirs 'libs'
     }
@@ -57,11 +60,13 @@ dependencies {
     compile 'com.android.support:leanback-v17:23.3.0'
     compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.8.1'
     compile 'com.android.support:design:23.3.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.11.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-    compile project(':Whitecloud-mp3africa-1.1.8')
+    compile project(':Whitecloud-mp3africa-1.1.10')
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }

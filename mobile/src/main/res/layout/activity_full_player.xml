@@ -33,6 +33,7 @@ limitations under the License.
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:background="@drawable/fullscreen_bg_gradient" >
 
         <TextView
@@ -93,6 +94,8 @@ limitations under the License.
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_marginStart="@dimen/text_view_margin"
+                    android:layout_marginLeft="@dimen/text_view_margin"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:maxLines="1"
@@ -104,6 +107,8 @@ limitations under the License.
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
+                    android:layout_toLeftOf="@+id/endText"
+                    android:layout_toRightOf="@+id/startText"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_toStartOf="@+id/endText"
@@ -114,6 +119,8 @@ limitations under the License.
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_marginEnd="@dimen/end_text_margin"
+                    android:layout_marginRight="@dimen/end_text_margin"
+                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:gravity="center_vertical"
                     android:layout_alignWithParentIfMissing="true"
@@ -171,6 +178,7 @@ limitations under the License.
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/fullscreen_toolbar_bg_gradient"

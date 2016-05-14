@@ -15,6 +15,7 @@
  */
 package net.africahomepage.mp3africa;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -43,6 +44,7 @@ public final class VoiceSearchParams {
      * @param query the query parameter from a voice search
      * @param extras the extras parameter from a voice search
      */
+    @TargetApi(21)
     public VoiceSearchParams(String query, Bundle extras) {
         this.query = query;
 

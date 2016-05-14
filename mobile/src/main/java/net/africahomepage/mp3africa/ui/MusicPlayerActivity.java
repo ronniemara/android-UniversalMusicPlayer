@@ -18,21 +18,25 @@ package net.africahomepage.mp3africa.ui;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
-import com.whitecloud.mp3africasdk.model.TrackModel;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.whitecloud.mp3africasdk.MPAfricaClient;
-
+import com.whitecloud.mp3africasdk.model.TrackModel;
 
 import net.africahomepage.mp3africa.R;
 import net.africahomepage.mp3africa.utils.LogHelper;
@@ -47,7 +51,7 @@ public class MusicPlayerActivity extends BaseActivity
         implements MediaBrowserFragment.MediaFragmentListener {
 
     private static final String TAG = LogHelper.makeLogTag(MusicPlayerActivity.class);
-    private static final String SAVED_MEDIA_ID="net.africahomepage.mp3africa.MEDIA_ID";
+    private static final String SAVED_MEDIA_ID = "net.africahomepage.mp3africa.MEDIA_ID";
     private static final String FRAGMENT_TAG = "uamp_list_container";
 
     public static final String EXTRA_START_FULLSCREEN =
@@ -56,13 +60,18 @@ public class MusicPlayerActivity extends BaseActivity
     /**
      * Optionally used with {@link #EXTRA_START_FULLSCREEN} to carry a MediaDescription to
      * the {@link FullScreenPlayerActivity}, speeding up the screen rendering
-     * while the {@link android.support.v4.media.session.MediaControllerCompat} is connecting.
+     * while the {@link MediaControllerCompat} is connecting.
      */
     public static final String EXTRA_CURRENT_MEDIA_DESCRIPTION =
-        "net.africahomepage.mp3africa.CURRENT_MEDIA_DESCRIPTION";
+            "net.africahomepage.mp3africa.CURRENT_MEDIA_DESCRIPTION";
 
     private Bundle mVoiceSearchParams;
-    private TrackModel mTrackModel = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+//    private TrackModel mTrackModel = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,41 +83,46 @@ public class MusicPlayerActivity extends BaseActivity
         initializeToolbar();
         initializeFromParams(savedInstanceState, getIntent());
         initializeApi();
-
+//
         // Only check if a full screen player is needed on the first time:
         if (savedInstanceState == null) {
             startFullScreenActivityIfNeeded(getIntent());
         }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void initializeApi() {
         // Use CognitoCachingCredentialsProvider to provide AWS credentials
-	// for the ApiClientFactory
+        // for the ApiClientFactory
         final AWSCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 this,          // activity context
                 "us-east-1:6d54f99d-7587-40d5-8a15-1fb02a6fafaa", // Cognito identity pool id
                 Regions.US_EAST_1 // region of Cognito identity pool
         );
 
-        new AsyncTask<Void, Void,TrackModel>() {
+        new AsyncTask<Void, Void, TrackModel>() {
             @Override
             protected TrackModel doInBackground(Void... params) {
                 ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
                 // create a client
                 final MPAfricaClient client = factory.build(MPAfricaClient.class);
 
+                TrackModel model = null;
                 try {
-                    TrackModel model = client.trackGet();
-                }catch(Exception e) {
+                    model = client.trackGet();
+                } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }
 
-                return client.trackGet();
+                return model;
             }
 
             @Override
             protected void onPostExecute(TrackModel trackModel) {
-            	Log.d(TAG, trackModel.getArtist());
+
+                Log.d(TAG, trackModel.getArtist());
             }
         }.execute();
     }
@@ -155,10 +169,10 @@ public class MusicPlayerActivity extends BaseActivity
     private void startFullScreenActivityIfNeeded(Intent intent) {
         if (intent != null && intent.getBooleanExtra(EXTRA_START_FULLSCREEN, false)) {
             Intent fullScreenIntent = new Intent(this, FullScreenPlayerActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                .putExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                    intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .putExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION,
+                            intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
             startActivity(fullScreenIntent);
         }
     }
@@ -169,10 +183,10 @@ public class MusicPlayerActivity extends BaseActivity
         // (which contain the query details) in a parameter, so we can reuse it later, when the
         // MediaSession is connected.
         if (intent.getAction() != null
-            && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
+                && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
             mVoiceSearchParams = intent.getExtras();
             LogHelper.d(TAG, "Starting from voice search query=",
-                mVoiceSearchParams.getString(SearchManager.QUERY));
+                    mVoiceSearchParams.getString(SearchManager.QUERY));
         } else {
             if (savedInstanceState != null) {
                 // If there is a saved media ID, use it
@@ -191,8 +205,8 @@ public class MusicPlayerActivity extends BaseActivity
             fragment.setMediaId(mediaId);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(
-                R.animator.slide_in_from_right, R.animator.slide_out_to_left,
-                R.animator.slide_in_from_left, R.animator.slide_out_to_right);
+                    R.animator.slide_in_from_right, R.animator.slide_out_to_left,
+                    R.animator.slide_in_from_left, R.animator.slide_out_to_right);
             transaction.replace(R.id.container, fragment, FRAGMENT_TAG);
             // If this is not the top level media (root), we add it to the fragment back stack,
             // so that actionbar toggle and Back will work appropriately:
@@ -227,5 +241,45 @@ public class MusicPlayerActivity extends BaseActivity
             mVoiceSearchParams = null;
         }
         getBrowseFragment().onConnected();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "MusicPlayer Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://net.africahomepage.mp3africa.ui/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "MusicPlayer Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://net.africahomepage.mp3africa.ui/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

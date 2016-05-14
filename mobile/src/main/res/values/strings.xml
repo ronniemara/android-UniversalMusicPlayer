@@ -51,4 +51,6 @@
     <string name="no_search_results">No search results.</string>
     <string name="loading">Loading…</string>
     <string name="media_route_menu_title">Play on…</string>
+    <string name="facebook_app_id">427082400904885</string>
+    <string name="username">Username</string>
 </resources>

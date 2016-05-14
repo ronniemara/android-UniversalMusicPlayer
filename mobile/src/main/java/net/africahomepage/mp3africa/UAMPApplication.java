@@ -20,6 +20,8 @@ import android.app.Application;
 import net.africahomepage.mp3africa.ui.FullScreenPlayerActivity;
 
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 
@@ -40,6 +42,9 @@ public class UAMPApplication extends Application {
                         .enableDebug()
                         .setTargetActivity(FullScreenPlayerActivity.class)
                         .build());
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
 
 
     }
