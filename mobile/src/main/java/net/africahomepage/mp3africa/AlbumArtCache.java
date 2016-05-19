@@ -17,12 +17,22 @@
 package net.africahomepage.mp3africa;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.LruCache;
+import android.widget.Toast;
+
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.mobile.AWSConfiguration;
+import com.amazonaws.mobile.AWSMobileClient;
+import com.amazonaws.mobile.content.ContentItem;
+import com.amazonaws.mobile.content.ContentManager;
+import com.amazonaws.mobile.content.ContentProgressListener;
 
 import net.africahomepage.mp3africa.utils.BitmapHelper;
 import net.africahomepage.mp3africa.utils.LogHelper;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -46,6 +56,8 @@ public final class AlbumArtCache {
     private static final int ICON_BITMAP_INDEX = 1;
 
     private final LruCache<String, Bitmap[]> mCache;
+
+    private   Bitmap[] bitmaps;
 
     private static final AlbumArtCache sInstance = new AlbumArtCache();
 
@@ -90,36 +102,49 @@ public final class AlbumArtCache {
         }
         LogHelper.d(TAG, "getOrFetch: starting asynctask to fetch ", artUrl);
 
-        new AsyncTask<Void, Void, Bitmap[]>() {
-            @Override
-            protected Bitmap[] doInBackground(Void[] objects) {
-                Bitmap[] bitmaps;
-                try {
-                    Bitmap bitmap = BitmapHelper.fetchAndRescaleBitmap(artUrl,
-                        MAX_ART_WIDTH, MAX_ART_HEIGHT);
-                    Bitmap icon = BitmapHelper.scaleBitmap(bitmap,
-                        MAX_ART_WIDTH_ICON, MAX_ART_HEIGHT_ICON);
-                    bitmaps = new Bitmap[] {bitmap, icon};
-                    mCache.put(artUrl, bitmaps);
-                } catch (IOException e) {
-                    return null;
-                }
-                LogHelper.d(TAG, "doInBackground: putting bitmap in cache. cache size=" +
-                    mCache.size());
-                return bitmaps;
-            }
 
-            @Override
-            protected void onPostExecute(Bitmap[] bitmaps) {
-                if (bitmaps == null) {
-                    listener.onError(artUrl, new IllegalArgumentException("got null bitmaps"));
-                } else {
-                    listener.onFetched(artUrl,
-                        bitmaps[BIG_BITMAP_INDEX], bitmaps[ICON_BITMAP_INDEX]);
+        //Bitmap bitmap = BitmapHelper.fetchAndRescaleBitmap(artUrl,
+       //     MAX_ART_WIDTH, MAX_ART_HEIGHT);
+        AWSMobileClient.defaultMobileClient()
+            .createDefaultContentManager(new ContentManager.BuilderResultHandler() {
+                @Override
+                public void onComplete(ContentManager contentManager) {
+                   contentManager.getContent(artUrl, new ContentProgressListener() {
+                       @Override
+                       public void onSuccess(ContentItem contentItem) {
+                           BitmapFactory.Options options = new BitmapFactory.Options();
+                           options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                           Bitmap bitmap = BitmapFactory.decodeFile(contentItem.getFile().getAbsolutePath(), options);
+
+                           Bitmap icon = BitmapHelper.scaleBitmap(bitmap,
+                                   MAX_ART_WIDTH_ICON, MAX_ART_HEIGHT_ICON);
+                           bitmaps = new Bitmap[] {bitmap, icon};
+                           mCache.put(artUrl, bitmaps);
+                           LogHelper.d(TAG, "doInBackground: putting bitmap in cache. cache size=" +
+                                   mCache.size());
+
+                           if (bitmaps == null) {
+                               listener.onError(artUrl, new IllegalArgumentException("got null bitmaps"));
+                           } else {
+                               listener.onFetched(artUrl,
+                                       bitmaps[BIG_BITMAP_INDEX], bitmaps[ICON_BITMAP_INDEX]);
+                           }
+                       }
+
+                       @Override
+                       public void onProgressUpdate(String filePath, boolean isWaiting, long bytesCurrent, long bytesTotal) {
+
+                       }
+
+                       @Override
+                       public void onError(String filePath, Exception ex) {
+                        LogHelper.d(TAG, "Inside onError");
+                       }
+                   });
                 }
-            }
-        }.execute();
+            });
     }
+
 
     public static abstract class FetchListener {
         public abstract void onFetched(String artUrl, Bitmap bigImage, Bitmap iconImage);

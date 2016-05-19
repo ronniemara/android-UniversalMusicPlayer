@@ -28,7 +28,7 @@ import com.amazonaws.regions.Regions;
 import com.whitecloud.mp3africasdk.MPAfricaClient;
 import com.whitecloud.mp3africasdk.model.TrackModel;
 
-import net.africahomepage.mp3africa.AWSConfiguration;
+import com.amazonaws.mobile.AWSConfiguration;
 import net.africahomepage.mp3africa.utils.LogHelper;
 
 import org.json.JSONArray;
@@ -99,7 +99,7 @@ public class RemoteJSONSource implements MusicProviderSource {
 
         return new CognitoCachingCredentialsProvider(
                 context ,          // activity context
-                AWSConfiguration.IDENTITY_ID, // Cognito identity pool id
+                AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
                 Regions.US_EAST_1 // region of Cognito identity pool
         );
     }

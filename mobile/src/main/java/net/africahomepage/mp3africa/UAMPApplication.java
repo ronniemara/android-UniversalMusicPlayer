@@ -18,8 +18,10 @@ package net.africahomepage.mp3africa;
 import android.app.Application;
 
 import net.africahomepage.mp3africa.ui.FullScreenPlayerActivity;
+import net.africahomepage.mp3africa.utils.LogHelper;
 
 
+import com.amazonaws.mobile.AWSMobileClient;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
@@ -29,6 +31,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
  * The {@link Application} for the uAmp application.
  */
 public class UAMPApplication extends Application {
+
+    private static final String LOG_TAG = UAMPApplication.class.getSimpleName();
 
     @Override
     public void onCreate() {
@@ -46,6 +50,15 @@ public class UAMPApplication extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+        LogHelper.d(LOG_TAG, "Application.onCreate - Initializing application...");
+        initializeApplication();
+        LogHelper.d(LOG_TAG, "Application.onCreate - Application initialized OK");
+    }
 
+    private void initializeApplication() {
+        AWSMobileClient.initializeMobileClientIfNecessary(getApplicationContext());
+
+        // ...Put any application-specific initialization logic here...
     }
 }
+

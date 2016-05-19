@@ -16,6 +16,7 @@
 
 package net.africahomepage.mp3africa.model;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -207,7 +208,7 @@ public class MusicProvider {
      * Get the list of music tracks from a server and caches the track information
      * for future reference, keying tracks by musicId and grouping by genre.
      */
-    public void retrieveMediaAsync(final Callback callback) {
+    public void retrieveMediaAsync(final Callback callback, final Context context) {
         LogHelper.d(TAG, "retrieveMediaAsync called");
         if (mCurrentState == State.INITIALIZED) {
             if (callback != null) {
@@ -221,7 +222,7 @@ public class MusicProvider {
         new AsyncTask<Void, Void, State>() {
             @Override
             protected State doInBackground(Void... params) {
-                retrieveMedia();
+                retrieveMedia(context);
                 return mCurrentState;
             }
 
@@ -249,12 +250,12 @@ public class MusicProvider {
         mMusicListByGenre = newMusicListByGenre;
     }
 
-    private synchronized void retrieveMedia() {
+    private synchronized void retrieveMedia(Context context) {
         try {
             if (mCurrentState == State.NON_INITIALIZED) {
                 mCurrentState = State.INITIALIZING;
 
-                Iterator<MediaMetadataCompat> tracks = mSource.iterator();
+                Iterator<MediaMetadataCompat> tracks = mSource.iterator(context);
                 while (tracks.hasNext()) {
                     MediaMetadataCompat item = tracks.next();
                     String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);

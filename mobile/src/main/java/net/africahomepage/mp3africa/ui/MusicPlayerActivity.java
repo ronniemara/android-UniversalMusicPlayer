@@ -30,6 +30,8 @@ import android.util.Log;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.AWSMobileClient;
+import com.amazonaws.mobile.user.IdentityManager;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
 import com.google.android.gms.appindexing.Action;
@@ -66,11 +68,33 @@ public class MusicPlayerActivity extends BaseActivity
             "net.africahomepage.mp3africa.CURRENT_MEDIA_DESCRIPTION";
 
     private Bundle mVoiceSearchParams;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
+
+        // pause/resume Mobile Analytics collection
+        awsMobileClient.handleOnResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Obtain a reference to the mobile client.
+        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
+
+        // pause/resume Mobile Analytics collection
+        awsMobileClient.handleOnPause();
+
+    }
+
+    /** The identity manager used to keep track of the current user account. */
+    private IdentityManager identityManager;
+
 //    private TrackModel mTrackModel = null;
 
     @Override
@@ -88,9 +112,18 @@ public class MusicPlayerActivity extends BaseActivity
         if (savedInstanceState == null) {
             startFullScreenActivityIfNeeded(getIntent());
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        // Obtain a reference to the mobile client. It is created in the Application class,
+        // but in case a custom Application class is not used, we initialize it here if necessary.
+        AWSMobileClient.initializeMobileClientIfNecessary(this);
+
+        // Obtain a reference to the mobile client. It is created in the Application class.
+        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
+
+        // Obtain a reference to the identity manager.
+        identityManager = awsMobileClient.getIdentityManager();
+
+
     }
 
 
@@ -215,39 +248,10 @@ public class MusicPlayerActivity extends BaseActivity
     public void onStart() {
         super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MusicPlayer Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://net.africahomepage.mp3africa.ui/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
+           }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MusicPlayer Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://net.africahomepage.mp3africa.ui/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }
