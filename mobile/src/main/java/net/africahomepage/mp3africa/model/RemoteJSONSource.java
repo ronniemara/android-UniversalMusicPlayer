@@ -23,23 +23,16 @@ import android.util.Log;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.AWSConfiguration;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.amazonaws.regions.Regions;
 import com.whitecloud.mp3africasdk.MPAfricaClient;
 import com.whitecloud.mp3africasdk.model.TrackModel;
 
-import com.amazonaws.mobile.AWSConfiguration;
+
 import net.africahomepage.mp3africa.utils.LogHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -100,7 +93,7 @@ public class RemoteJSONSource implements MusicProviderSource {
         return new CognitoCachingCredentialsProvider(
                 context ,          // activity context
                 AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
-                Regions.US_EAST_1 // region of Cognito identity pool
+                AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
         );
     }
 

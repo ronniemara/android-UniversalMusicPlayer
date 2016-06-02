@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.amazonaws:aws-android-sdk-apigateway-core:2.2.6+"
+    compile "com.amazonaws:aws-android-sdk-apigateway-core:2.2.15"
 }
 
 task copyDependencies(type: Copy) {

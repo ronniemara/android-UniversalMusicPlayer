@@ -18,30 +18,22 @@ package net.africahomepage.mp3africa.ui;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.text.TextUtils;
-import android.util.Log;
+
+import android.view.View;
 
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.AWSMobileClient;
-import com.amazonaws.mobile.user.IdentityManager;
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
-import com.amazonaws.regions.Regions;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.whitecloud.mp3africasdk.MPAfricaClient;
-import com.whitecloud.mp3africasdk.model.TrackModel;
+
 
 import net.africahomepage.mp3africa.R;
 import net.africahomepage.mp3africa.utils.LogHelper;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Main activity for the music player.
@@ -73,33 +65,23 @@ public class MusicPlayerActivity extends BaseActivity
     public void onResume() {
         super.onResume();
 
-        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
-
-        // pause/resume Mobile Analytics collection
-        awsMobileClient.handleOnResume();
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        // Obtain a reference to the mobile client.
-        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
 
-        // pause/resume Mobile Analytics collection
-        awsMobileClient.handleOnPause();
 
     }
 
-    /** The identity manager used to keep track of the current user account. */
-    private IdentityManager identityManager;
 
 //    private TrackModel mTrackModel = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         LogHelper.d(TAG, "Activity onCreate");
 
         setContentView(R.layout.activity_player);
@@ -113,15 +95,7 @@ public class MusicPlayerActivity extends BaseActivity
             startFullScreenActivityIfNeeded(getIntent());
         }
 
-        // Obtain a reference to the mobile client. It is created in the Application class,
-        // but in case a custom Application class is not used, we initialize it here if necessary.
-        AWSMobileClient.initializeMobileClientIfNecessary(this);
 
-        // Obtain a reference to the mobile client. It is created in the Application class.
-        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
-
-        // Obtain a reference to the identity manager.
-        identityManager = awsMobileClient.getIdentityManager();
 
 
     }
@@ -254,4 +228,8 @@ public class MusicPlayerActivity extends BaseActivity
     public void onStop() {
         super.onStop();
     }
+    public void forceCrash(View view) {
+        throw new RuntimeException("This is a crash");
+    }
+
 }

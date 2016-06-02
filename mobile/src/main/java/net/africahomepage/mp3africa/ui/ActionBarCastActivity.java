@@ -111,9 +111,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     case R.id.navigation_allmusic:
                         activityClass = MusicPlayerActivity.class;
                         break;
-                    case R.id.navigation_playlists:
-                        activityClass = PlaceholderActivity.class;
-                        break;
+
                 }
                 if (activityClass != null) {
                     startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);
@@ -298,9 +296,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                 });
         if (MusicPlayerActivity.class.isAssignableFrom(getClass())) {
             navigationView.setCheckedItem(R.id.navigation_allmusic);
-        } else if (PlaceholderActivity.class.isAssignableFrom(getClass())) {
-            navigationView.setCheckedItem(R.id.navigation_playlists);
         }
+
     }
 
     protected void updateDrawerToggle() {
