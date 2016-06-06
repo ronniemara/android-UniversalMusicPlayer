@@ -16,12 +16,22 @@
 
 package net.africahomepage.mp3africa;
 
+import android.content.Context;
+
 import net.africahomepage.mp3africa.model.MusicProvider;
 import net.africahomepage.mp3africa.model.MusicProviderSource;
 
+
+import org.mockito.Mock;
+
+
 import java.util.concurrent.CountDownLatch;
 
+
 public class TestSetupHelper {
+
+    @Mock
+    static Context mMockContext;
 
     public static MusicProvider setupMusicProvider(MusicProviderSource source)
             throws Exception {
@@ -32,7 +42,7 @@ public class TestSetupHelper {
             public void onMusicCatalogReady(boolean success) {
                 signal.countDown();
             }
-        });
+        },mMockContext);
         signal.await();
         return provider;
     }

@@ -58,4 +58,10 @@
     <!-- This can be anything, but it should be unique to the app. -->
     <string name="content_file_provider_authority">net.africahomepage.mp3africa.fileprovider</string>
 
+
+    <!--<string name="twitter_consumer_key">twitter_consumer_key</string>-->
+    <!--<string name="twitter_consumer_secret">twitter_consumer_secret</string>-->
+    <!--<string name="twitter_callback_url">twitterdemo</string>-->
+
+
 </resources>
