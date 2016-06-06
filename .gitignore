@@ -6,3 +6,4 @@
 *.iml
 mobile/src/main/java/com/amazonaws/mobile/AWSConfiguration.java
 /local_history.patch
+/mobile/fabric.properties
