@@ -23,10 +23,11 @@ android {
     defaultConfig {
         applicationId "net.africahomepage.mp3africa"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 3
         versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -86,6 +87,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.google.android.gms:play-services-analytics:9.0.1'
+    compile 'com.android.support:multidex:1.0.0'
 
     //unit test dependencies
     testCompile 'junit:junit:4.12'

@@ -36,3 +36,6 @@ build/
 
 #aws config
 src/main/java/net/africahomepage/mp3africa/AWSConfiguration.java
+
+#google configuration
+google-services.json

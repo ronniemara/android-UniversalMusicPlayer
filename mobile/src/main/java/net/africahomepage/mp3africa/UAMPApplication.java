@@ -15,7 +15,7 @@
  */
 package net.africahomepage.mp3africa;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import net.africahomepage.mp3africa.ui.FullScreenPlayerActivity;
 import net.africahomepage.mp3africa.utils.LogHelper;
@@ -30,7 +30,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 /**
  * The {@link Application} for the uAmp application.
  */
-public class UAMPApplication extends Application {
+public class UAMPApplication extends MultiDexApplication {
 
     private static final String LOG_TAG = UAMPApplication.class.getSimpleName();
 
