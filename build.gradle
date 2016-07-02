@@ -30,8 +30,3 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-}

@@ -345,19 +345,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaItem>> result) {
         LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
-        if (mMusicProvider.isInitialized()) {
-            // if music library is ready, return immediately
-            result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
-        } else {
-            // otherwise, only return results when the music library is retrieved
-            result.detach();
-            mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
-                @Override
-                public void onMusicCatalogReady(boolean success) {
-                    result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
-                }
-            });
-        }
+        result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
     }
 
     /**
