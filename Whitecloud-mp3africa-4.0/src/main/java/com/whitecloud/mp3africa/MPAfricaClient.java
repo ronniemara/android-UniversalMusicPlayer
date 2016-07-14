@@ -13,13 +13,14 @@
  * permissions and limitations under the License.
  */
 
-package com.whitecloud.mp3africasdk;
+package com.whitecloud.mp3africa;
 
 import java.util.*;
 
-import com.whitecloud.mp3africasdk.model.TrackModel;
+import com.whitecloud.mp3africa.model.TrackModel;
+import com.whitecloud.mp3africa.model.GenreTrackListModel;
 
-@com.amazonaws.mobileconnectors.apigateway.annotation.Service(endpoint = "https://bq76iu94yb.execute-api.us-east-1.amazonaws.com/test")
+@com.amazonaws.mobileconnectors.apigateway.annotation.Service(endpoint = "https://bq76iu94yb.execute-api.us-east-1.amazonaws.com/beta")
 public interface MPAfricaClient {
     
     /**
@@ -29,5 +30,16 @@ public interface MPAfricaClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/track", method = "GET")
     TrackModel trackGet();
+    
+    /**
+     * 
+     * 
+     * @param genre 
+     * @return GenreTrackListModel
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/tracks", method = "GET")
+    GenreTrackListModel tracksGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "genre", location = "query")
+            String genre);
     
 }

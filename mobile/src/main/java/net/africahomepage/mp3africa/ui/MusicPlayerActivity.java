@@ -32,6 +32,9 @@ import android.view.View;
 
 import net.africahomepage.mp3africa.R;
 import net.africahomepage.mp3africa.utils.LogHelper;
+
+import com.amazonaws.mobile.AWSMobileClient;
+import com.amazonaws.mobile.user.IdentityManager;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -60,6 +63,7 @@ public class MusicPlayerActivity extends BaseActivity
             "net.africahomepage.mp3africa.CURRENT_MEDIA_DESCRIPTION";
 
     private Bundle mVoiceSearchParams;
+    private IdentityManager identityManager;
 
     @Override
     public void onResume() {
@@ -80,7 +84,18 @@ public class MusicPlayerActivity extends BaseActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        // Obtain a reference to the mobile client. It is created in the Application class,
+        // but in case a custom Application class is not used, we initialize it here if necessary.
+        AWSMobileClient.initializeMobileClientIfNecessary(this);
+
+        // Obtain a reference to the mobile client. It is created in the Application class.
+        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
+
+        // Obtain a reference to the identity manager.
+        identityManager = awsMobileClient.getIdentityManager();
         Fabric.with(this, new Crashlytics());
         LogHelper.d(TAG, "Activity onCreate");
 

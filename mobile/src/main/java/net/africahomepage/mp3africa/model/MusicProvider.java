@@ -69,7 +69,7 @@ public class MusicProvider {
     }
 
     public MusicProvider() {
-        this(new RemoteJSONSource());
+        this(new ApiRemoteSource());
     }
     public MusicProvider(MusicProviderSource source) {
         mSource = source;
@@ -208,7 +208,7 @@ public class MusicProvider {
      * Get the list of music tracks from a server and caches the track information
      * for future reference, keying tracks by musicId and grouping by genre.
      */
-    public void retrieveMediaAsync(final Callback callback, final Context context) {
+    public void retrieveMediaAsync(final Callback callback) {
         LogHelper.d(TAG, "retrieveMediaAsync called");
         if (mCurrentState == State.INITIALIZED) {
             if (callback != null) {
@@ -222,7 +222,7 @@ public class MusicProvider {
         new AsyncTask<Void, Void, State>() {
             @Override
             protected State doInBackground(Void... params) {
-                retrieveMedia(context);
+                retrieveMedia();
                 return mCurrentState;
             }
 
@@ -250,12 +250,12 @@ public class MusicProvider {
         mMusicListByGenre = newMusicListByGenre;
     }
 
-    private synchronized void retrieveMedia(Context context) {
+    private synchronized void retrieveMedia() {
         try {
             if (mCurrentState == State.NON_INITIALIZED) {
                 mCurrentState = State.INITIALIZING;
 
-                Iterator<MediaMetadataCompat> tracks = mSource.iterator(context);
+                Iterator<MediaMetadataCompat> tracks = mSource.iterator();
                 while (tracks.hasNext()) {
                     MediaMetadataCompat item = tracks.next();
                     String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);

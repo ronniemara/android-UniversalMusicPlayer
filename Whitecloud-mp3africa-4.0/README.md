@@ -13,7 +13,7 @@ mvn install
 This will install the generated client to your local Maven repository.
 
 # Use it in your project
-Copy Whitecloud-mp3africa-2.0.8.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
+Copy Whitecloud-mp3africa-4.0.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
 
 You can initialize the SDK using the `ApiClientFactory` object.
 
@@ -26,7 +26,7 @@ final MPAfricaClient client = factory.build(MPAfricaClient.class);
 TrackModel  output = client.trackGet();
 
 // you also have access to your API models
-TrackModel myModel = new TrackModel();
+GenreTrackListModelTracksItem myModel = new GenreTrackListModelTracksItem();
 myModel.setArtist(artist);
 myModel.setSongTitle(songTitle);
 myModel.setDuration(duration);

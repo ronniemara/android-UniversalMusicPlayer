@@ -13,10 +13,10 @@
  * permissions and limitations under the License.
  */
 
-package com.whitecloud.mp3africasdk.model;
+package com.whitecloud.mp3africa.model;
 
 
-public class TrackModel {
+public class GenreTrackListModelTracksItem {
     @com.google.gson.annotations.SerializedName("Artist")
     private String artist = null;
     @com.google.gson.annotations.SerializedName("SongTitle")

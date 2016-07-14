@@ -16,23 +16,20 @@
 
 package net.africahomepage.mp3africa.model;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v4.media.MediaMetadataCompat;
-import android.util.Log;
-
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.AWSConfiguration;
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
-import com.amazonaws.regions.Regions;
-import com.whitecloud.mp3africasdk.MPAfricaClient;
-import com.whitecloud.mp3africasdk.model.TrackModel;
-
 
 import net.africahomepage.mp3africa.utils.LogHelper;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -44,84 +41,72 @@ public class RemoteJSONSource implements MusicProviderSource {
 
     private static final String TAG = LogHelper.makeLogTag(RemoteJSONSource.class);
 
+    protected static final String CATALOG_URL =
+        "http://storage.googleapis.com/automotive-media/music.json";
+
+    private static final String JSON_MUSIC = "music";
+    private static final String JSON_TITLE = "title";
+    private static final String JSON_ALBUM = "album";
+    private static final String JSON_ARTIST = "artist";
+    private static final String JSON_GENRE = "genre";
+    private static final String JSON_SOURCE = "source";
+    private static final String JSON_IMAGE = "image";
+    private static final String JSON_TRACK_NUMBER = "trackNumber";
+    private static final String JSON_TOTAL_TRACK_COUNT = "totalTrackCount";
+    private static final String JSON_DURATION = "duration";
 
     @Override
-    public Iterator<MediaMetadataCompat> iterator(Context context) {
+    public Iterator<MediaMetadataCompat> iterator() {
         try {
-            TrackModel model = getTracksFromApi(context);
+            int slashPos = CATALOG_URL.lastIndexOf('/');
+            String path = CATALOG_URL.substring(0, slashPos + 1);
+            JSONObject jsonObj = fetchJSONFromUrl(CATALOG_URL);
             ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
+            if (jsonObj != null) {
+                JSONArray jsonTracks = jsonObj.getJSONArray(JSON_MUSIC);
 
-            if (model != null) {
-               // for (int j = 0; j < jsonTracks.length(); j++) {
-                for (int i = 0; i < 1; i++) {
-                tracks.add(buildFromTrack(model));
-                 }
+                if (jsonTracks != null) {
+                    for (int j = 0; j < jsonTracks.length(); j++) {
+                        tracks.add(buildFromJSON(jsonTracks.getJSONObject(j), path));
+                    }
+                }
             }
             return tracks.iterator();
-        } catch (Exception e) {
+        } catch (JSONException e) {
             LogHelper.e(TAG, e, "Could not retrieve music list");
             throw new RuntimeException("Could not retrieve music list", e);
         }
     }
 
-    private TrackModel getTracksFromApi(Context context) {
+    private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws JSONException {
+        String title = json.getString(JSON_TITLE);
+        String album = json.getString(JSON_ALBUM);
+        String artist = json.getString(JSON_ARTIST);
+        String genre = json.getString(JSON_GENRE);
+        String source = json.getString(JSON_SOURCE);
+        String iconUrl = json.getString(JSON_IMAGE);
+        int trackNumber = json.getInt(JSON_TRACK_NUMBER);
+        int totalTrackCount = json.getInt(JSON_TOTAL_TRACK_COUNT);
+        int duration = json.getInt(JSON_DURATION) * 1000; // ms
 
-        final AWSCredentialsProvider credentialsProvider = initializeApi(context);
+        LogHelper.d(TAG, "Found music track: ", json);
 
-
-                ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
-                // create a client
-                final MPAfricaClient client = factory.build(MPAfricaClient.class);
-
-                TrackModel model = null;
-                try {
-                    model = client.trackGet();
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-
-                return model;
-            }
-
-
-
-
-    private AWSCredentialsProvider initializeApi(Context   context) {
-        // Use CognitoCachingCredentialsProvider to provide AWS credentials
-        // for the ApiClientFactory
-
-        return new CognitoCachingCredentialsProvider(
-                context ,          // activity context
-                AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
-                AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
-        );
-    }
-
-    private MediaMetadataCompat buildFromTrack(TrackModel model) {
-        String title = model.getSongTitle();
-        String album = model.getAlbum();
-        String artist = model.getArtist();
-        String genre = model.getGenre();
-       String source = model.getSongUrl();
-        String iconUrl = model.getIconUrl();
-        int trackNumber = model.getTrackNumber();
-        int totalTrackCount = 10;
-        int duration = model.getDuration() * 1000; // ms
-
-
+        // Media is stored relative to JSON file
+        if (!source.startsWith("http")) {
+            source = basePath + source;
+        }
+        if (!iconUrl.startsWith("http")) {
+            iconUrl = basePath + iconUrl;
+        }
         // Since we don't have a unique ID in the server, we fake one using the hashcode of
         // the music source. In a real world app, this could come from the server.
-        String id = model.getArtist() + ", " +model.getSongTitle();
+        String id = String.valueOf(source.hashCode());
 
-        /*
-        STOP SHIP
-        Adding the music source to the MediaMetadata (and consequently using it in the
-        mediaSession.setMetadata) is not a good idea for a real world music app, because
-        the session metadata can be accessed by notification listeners. This is done in this
-        sample for convenience only.
-        noinspection ResourceType
-        */
-        //noinspection WrongConstant
+        // Adding the music source to the MediaMetadata (and consequently using it in the
+        // mediaSession.setMetadata) is not a good idea for a real world music app, because
+        // the session metadata can be accessed by notification listeners. This is done in this
+        // sample for convenience only.
+        //noinspection ResourceType
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, source)
@@ -134,5 +119,39 @@ public class RemoteJSONSource implements MusicProviderSource {
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
                 .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)
                 .build();
+    }
+
+    /**
+     * Download a JSON file from a server, parse the content and return the JSON
+     * object.
+     *
+     * @return result JSONObject containing the parsed representation.
+     */
+    private JSONObject fetchJSONFromUrl(String urlString) throws JSONException {
+        BufferedReader reader = null;
+        try {
+            URLConnection urlConnection = new URL(urlString).openConnection();
+            reader = new BufferedReader(new InputStreamReader(
+                    urlConnection.getInputStream(), "iso-8859-1"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            return new JSONObject(sb.toString());
+        } catch (JSONException e) {
+            throw e;
+        } catch (Exception e) {
+            LogHelper.e(TAG, "Failed to parse the json for media list", e);
+            return null;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
     }
 }

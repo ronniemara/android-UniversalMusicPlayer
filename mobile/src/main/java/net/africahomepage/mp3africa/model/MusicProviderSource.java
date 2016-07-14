@@ -16,12 +16,11 @@
 
 package net.africahomepage.mp3africa.model;
 
-import android.content.Context;
 import android.support.v4.media.MediaMetadataCompat;
 
 import java.util.Iterator;
 
 public interface MusicProviderSource {
     String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
-    Iterator<MediaMetadataCompat> iterator(Context context);
+    Iterator<MediaMetadataCompat> iterator();
 }

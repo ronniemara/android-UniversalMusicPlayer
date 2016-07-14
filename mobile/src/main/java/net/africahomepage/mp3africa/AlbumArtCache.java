@@ -22,16 +22,20 @@ import android.os.AsyncTask;
 import android.util.LruCache;
 import android.widget.Toast;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.mobile.AWSConfiguration;
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.content.ContentItem;
 import com.amazonaws.mobile.content.ContentManager;
 import com.amazonaws.mobile.content.ContentProgressListener;
+import com.amazonaws.mobile.user.IdentityManager;
 
 import net.africahomepage.mp3africa.utils.BitmapHelper;
 import net.africahomepage.mp3africa.utils.LogHelper;
 
 import java.io.File;
 import java.io.IOException;
+import android.content.Context;
 
 /**
  * Implements a basic cache of album arts, with async loading support.
@@ -103,10 +107,22 @@ public final class AlbumArtCache {
 
         //Bitmap bitmap = BitmapHelper.fetchAndRescaleBitmap(artUrl,
        //     MAX_ART_WIDTH, MAX_ART_HEIGHT);
-        AWSMobileClient.defaultMobileClient()
-            .createDefaultContentManager(new ContentManager.BuilderResultHandler() {
+        final ClientConfiguration clientConfiguration = new ClientConfiguration();
+        clientConfiguration.setUserAgent(AWSConfiguration.AWS_MOBILEHUB_USER_AGENT);
+        final IdentityManager identityManager = new IdentityManager(MusicService.getInstance(), clientConfiguration);
+        Context context = MusicService.getInstance().getApplicationContext();
+        new ContentManager.Builder()
+                .withContext(context)
+                .withIdentityManager(identityManager)
+                .withS3Bucket(AWSConfiguration.AMAZON_CONTENT_DELIVERY_S3_BUCKET)
+                .withS3DirPrefix("Thumbnails")
+                .withLocalBasePath(MusicService.getInstance().getFilesDir().getAbsolutePath())
+                .withCloudFrontDomainName(AWSConfiguration.AMAZON_CLOUD_FRONT_DISTRIBUTION_DOMAIN)
+                .withClientConfiguration(clientConfiguration)
+                .build(new ContentManager.BuilderResultHandler() {
                 @Override
                 public void onComplete(ContentManager contentManager) {
+
                    contentManager.getContent(artUrl, new ContentProgressListener() {
                        @Override
                        public void onSuccess(ContentItem contentItem) {

@@ -34,8 +34,6 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.media.MediaRouter;
 
-import net.africahomepage.mp3africa.R;
-
 import net.africahomepage.mp3africa.model.MusicProvider;
 import net.africahomepage.mp3africa.playback.CastPlayback;
 import net.africahomepage.mp3africa.playback.LocalPlayback;
@@ -46,6 +44,10 @@ import net.africahomepage.mp3africa.ui.NowPlayingActivity;
 import net.africahomepage.mp3africa.utils.CarHelper;
 import net.africahomepage.mp3africa.utils.LogHelper;
 import net.africahomepage.mp3africa.utils.WearHelper;
+
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.AWSConfiguration;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
@@ -54,6 +56,9 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static net.africahomepage.mp3africa.utils.MediaIDHelper.MEDIA_ID_ROOT;
+import com.whitecloud.mp3africa.MPAfricaClient;
+
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
 /**
  * This class provides a MediaBrowser through a service. It exposes the media library to a browsing
@@ -145,6 +150,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
 
     private boolean mIsConnectedToCar;
     private BroadcastReceiver mCarConnectionReceiver;
+    private static MusicService instance;
 
     /**
      * Consumer responsible for switching the Playback instances depending on whether
@@ -186,21 +192,56 @@ public class MusicService extends MediaBrowserServiceCompat implements
         }
     };
 
+
+    /**
+     * initialize the api consuming the credentials provider using ApiClientFactory
+     * @return MPAfricaClient
+     */
+    public static MPAfricaClient  initializeApi() {
+	    final AWSCredentialsProvider credentialsProvider = getCredentialsProvider();
+	    ApiClientFactory factory = new ApiClientFactory().credentialsProvider(credentialsProvider);
+	    // create a client
+        return factory.build(MPAfricaClient.class);
+    }
+
+    /**
+     *  get AWS credentials provider
+     *
+     * @return AWSCredentialsProvider
+     */
+
+    private static AWSCredentialsProvider getCredentialsProvider() {
+	    // Use CognitoCachingCredentialsProvider to provide AWS credentials
+	    // for the ApiClientFactory
+	    return new CognitoCachingCredentialsProvider(
+                instance,          // activity context
+			    AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID, // Cognito identity pool id
+			    AWSConfiguration.AMAZON_COGNITO_REGION // region of Cognito identity pool
+			    );
+    }
+
+    public static MusicService getInstance() {
+        return instance;
+    }
+
     /*
      * (non-Javadoc)
      * @see android.app.Service#onCreate()
      */
     @Override
     public void onCreate() {
+
         super.onCreate();
         LogHelper.d(TAG, "onCreate");
 
+        instance = this;
         mMusicProvider = new MusicProvider();
+
 
         // To make the app more responsive, fetch and cache catalog information now.
         // This can help improve the response time in the method
         // {@link #onLoadChildren(String, Result<List<MediaItem>>) onLoadChildren()}.
-        mMusicProvider.retrieveMediaAsync(null /* Callback */, this);
+        mMusicProvider.retrieveMediaAsync(null /* Callback */);
 
         mPackageValidator = new PackageValidator(this);
 

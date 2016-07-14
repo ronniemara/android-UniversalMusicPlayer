@@ -42,7 +42,7 @@ public class TestSetupHelper {
             public void onMusicCatalogReady(boolean success) {
                 signal.countDown();
             }
-        },mMockContext);
+        });
         signal.await();
         return provider;
     }

@@ -34,7 +34,7 @@
         android:required="false" />
 
     <application
-        android:name="android.support.multidex.MultiDexApplication"
+        android:name="net.africahomepage.mp3africa.UAMPApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
