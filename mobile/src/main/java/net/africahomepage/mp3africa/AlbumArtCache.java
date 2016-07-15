@@ -109,7 +109,7 @@ public final class AlbumArtCache {
        //     MAX_ART_WIDTH, MAX_ART_HEIGHT);
         final ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setUserAgent(AWSConfiguration.AWS_MOBILEHUB_USER_AGENT);
-        final IdentityManager identityManager = new IdentityManager(MusicService.getInstance(), clientConfiguration);
+        final IdentityManager identityManager = AWSMobileClient.defaultMobileClient().getIdentityManager();
         Context context = MusicService.getInstance().getApplicationContext();
         new ContentManager.Builder()
                 .withContext(context)
