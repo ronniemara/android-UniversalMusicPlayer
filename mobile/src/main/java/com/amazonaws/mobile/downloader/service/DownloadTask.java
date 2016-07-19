@@ -668,7 +668,7 @@ public final class DownloadTask implements Callable<Boolean> {
         private int downloadFlags;
 
         /** Our listener. */
-        private DownloadListener listener;
+        private DownloadTask.DownloadListener listener;
 
         /** Our policy. */
         private DownloadPolicyProvider provider;
@@ -761,7 +761,7 @@ public final class DownloadTask implements Callable<Boolean> {
          *            the listener
          * @return the builder
          */
-        public Builder withListener(final DownloadListener listener) {
+        public Builder withListener(final DownloadTask.DownloadListener listener) {
             this.listener = listener;
             return this;
         }
@@ -863,7 +863,7 @@ public final class DownloadTask implements Callable<Boolean> {
          *            error code with a DownloadError enum value
          */
         void finish(final long downloadId, final CompletionStatus withStatus, final String completionMessage,
-                    final long bytesRead, final long totalBytes, final boolean autoRestart, final String downloadError);
+            final long bytesRead, final long totalBytes, final boolean autoRestart, final String downloadError);
     }
 
     /**

@@ -18,9 +18,13 @@ package net.africahomepage.mp3africa.model;
 
 import android.support.v4.media.MediaMetadataCompat;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 public interface MusicProviderSource {
-    String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
+
     Iterator<MediaMetadataCompat> iterator();
+    HashMap<String, String> getTracksUrls();
 }

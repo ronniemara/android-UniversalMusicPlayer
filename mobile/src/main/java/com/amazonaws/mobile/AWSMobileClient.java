@@ -185,7 +185,7 @@ public class AWSMobileClient {
             clientConfiguration.setUserAgent(AWSConfiguration.AWS_MOBILEHUB_USER_AGENT);
             final IdentityManager identityManager = new IdentityManager(context, clientConfiguration);
             final AWSMobileClient awsClient =
-                new Builder(context)
+                new AWSMobileClient.Builder(context)
                     .withCognitoRegion(AWSConfiguration.AMAZON_COGNITO_REGION)
                     .withCognitoIdentityPoolID(AWSConfiguration.AMAZON_COGNITO_IDENTITY_POOL_ID)
                     .withMobileAnalyticsAppID(AWSConfiguration.AMAZON_MOBILE_ANALYTICS_APP_ID)

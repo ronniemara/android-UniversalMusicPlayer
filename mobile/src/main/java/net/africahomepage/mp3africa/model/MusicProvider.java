@@ -31,6 +31,7 @@ import net.africahomepage.mp3africa.utils.MediaIDHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +55,8 @@ public class MusicProvider {
 
     // Categorized caches for music track data:
     private ConcurrentMap<String, List<MediaMetadataCompat>> mMusicListByGenre;
-    private final ConcurrentMap<String, MutableMediaMetadata> mMusicListById;
+    private static  ConcurrentMap<String, MutableMediaMetadata> mMusicListById;
+    private ConcurrentMap<String, String> mTracksUrls;
 
     private final Set<String> mFavoriteTracks;
 
@@ -76,6 +78,7 @@ public class MusicProvider {
         mMusicListByGenre = new ConcurrentHashMap<>();
         mMusicListById = new ConcurrentHashMap<>();
         mFavoriteTracks = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+        mTracksUrls = new ConcurrentHashMap<>();
     }
 
     /**
@@ -168,6 +171,10 @@ public class MusicProvider {
         return mMusicListById.containsKey(musicId) ? mMusicListById.get(musicId).metadata : null;
     }
 
+    public static String getSourceUrl(String metadataId) {
+        return String.valueOf(mMusicListById.get(metadataId));
+    }
+
     public synchronized void updateMusicArt(String musicId, Bitmap albumArt, Bitmap icon) {
         MediaMetadataCompat metadata = getMusic(musicId);
         metadata = new MediaMetadataCompat.Builder(metadata)
@@ -198,6 +205,10 @@ public class MusicProvider {
         } else {
             mFavoriteTracks.remove(musicId);
         }
+    }
+
+    public HashMap<String, String> getmTracksUrls () {
+        return mSource.getTracksUrls();
     }
 
     public boolean isFavorite(String musicId) {
@@ -259,6 +270,8 @@ public class MusicProvider {
                 while (tracks.hasNext()) {
                     MediaMetadataCompat item = tracks.next();
                     String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+
+                    //store
                     mMusicListById.put(musicId, new MutableMediaMetadata(musicId, item));
                 }
                 buildListsByGenre();

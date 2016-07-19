@@ -72,7 +72,7 @@ dependencies {
     compile 'com.android.support:leanback-v17:23.4.0'
     compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.8.4'
     compile 'com.android.support:design:23.4.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.13.2'
+    compile 'com.facebook.android:facebook-android-sdk:4.14.0'
     compile 'com.google.android.gms:play-services-appindexing:9.0.1'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.20'
     compile 'com.amazonaws:aws-android-sdk-cognito:2.2.20'
@@ -100,6 +100,5 @@ dependencies {
     // Optional -- UI testing with UI Automator
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
     androidTestCompile 'org.mockito:mockito-core:1.10.19'
-
-    compile project(path: ':Whitecloud-mp3africa-4.0')
+    compile project(':Whitecloud-mp3africa-4.0.0-02')
 }

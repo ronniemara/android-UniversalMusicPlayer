@@ -28,9 +28,12 @@ public class MutableMediaMetadata {
     public MediaMetadataCompat metadata;
     public final String trackId;
 
+
     public MutableMediaMetadata(String trackId, MediaMetadataCompat metadata) {
+
         this.metadata = metadata;
         this.trackId = trackId;
+
     }
 
     @Override

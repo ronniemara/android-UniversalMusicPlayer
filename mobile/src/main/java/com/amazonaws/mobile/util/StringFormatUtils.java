@@ -1,7 +1,5 @@
 package com.amazonaws.mobile.util;
 
-import java.util.Locale;
-
 public final class StringFormatUtils {
 
     /** This utility class is not constructable. */
@@ -27,9 +25,9 @@ public final class StringFormatUtils {
             size /= 1024;
             if (size < 512) {
                 if (higherPrecision) {
-                    return String.format(Locale.CANADA,"%.2f %s", size, quantifiers[i]);
+                    return String.format("%.2f %s", size, quantifiers[i]);
                 } else {
-                    return String.format(Locale.CANADA, "%d %s", Math.round(size), quantifiers[i]);
+                    return String.format("%d %s", Math.round(size), quantifiers[i]);
                 }
             }
         }

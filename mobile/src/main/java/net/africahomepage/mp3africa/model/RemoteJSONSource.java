@@ -31,7 +31,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Utility class to get a list of MusicTrack's based on a server-side JSON
@@ -78,6 +80,11 @@ public class RemoteJSONSource implements MusicProviderSource {
         }
     }
 
+    @Override
+    public HashMap<String, String> getTracksUrls() {
+        return null;
+    }
+
     private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws JSONException {
         String title = json.getString(JSON_TITLE);
         String album = json.getString(JSON_ALBUM);
@@ -109,7 +116,7 @@ public class RemoteJSONSource implements MusicProviderSource {
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
-                .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, source)
+
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)

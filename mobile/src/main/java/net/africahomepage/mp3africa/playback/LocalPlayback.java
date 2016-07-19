@@ -177,7 +177,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     MediaIDHelper.extractMusicIDFromMediaID(item.getDescription().getMediaId()));
 
             //noinspection ResourceType
-            String source = track.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
+            String source = mMusicProvider.getmTracksUrls()
+                    .get(track.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID));
 
             try {
                 createMediaPlayerIfNeeded();

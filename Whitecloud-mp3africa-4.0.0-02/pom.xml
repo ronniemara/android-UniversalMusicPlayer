@@ -5,7 +5,7 @@
   <artifactId>Whitecloud-mp3africa</artifactId>
   <packaging>jar</packaging>
   <name>Whitecloud-mp3africa</name>
-  <version>4.0</version>
+  <version>4.0.0-02</version>
 
   <build>
     <plugins>
