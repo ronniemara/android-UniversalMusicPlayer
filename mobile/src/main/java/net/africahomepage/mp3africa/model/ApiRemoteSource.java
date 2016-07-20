@@ -74,6 +74,7 @@ public class ApiRemoteSource implements MusicProviderSource {
         }
         return null;
     }
+
     private MediaMetadataCompat buildFromTrack(GenreTrackListModelTracksItem model) {
         String title = model.getSongTitle();
         String album = model.getAlbum();

@@ -21,6 +21,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import net.africahomepage.mp3africa.model.MusicProviderSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class SimpleMusicProviderSource implements MusicProviderSource {
         //noinspection ResourceType
         mData.add(new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
-                .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, source)
+
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMs)
@@ -50,6 +51,11 @@ public class SimpleMusicProviderSource implements MusicProviderSource {
     @Override
     public Iterator<MediaMetadataCompat> iterator() {
         return mData.iterator();
+    }
+
+    @Override
+    public HashMap<String, String> getTracksUrls() {
+        return null;
     }
 
 }

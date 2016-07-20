@@ -109,13 +109,7 @@ public class MusicPlayerActivity extends BaseActivity
         if (savedInstanceState == null) {
             startFullScreenActivityIfNeeded(getIntent());
         }
-
-
-
-
     }
-
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
