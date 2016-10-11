@@ -56,7 +56,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static net.africahomepage.mp3africa.utils.MediaIDHelper.MEDIA_ID_ROOT;
-import com.whitecloud.mp3africa.MPAfricaClient;
+import com.whitecloud.mpafrica.MPAfricaClient;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 

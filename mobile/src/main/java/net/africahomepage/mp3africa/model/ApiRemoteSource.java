@@ -3,8 +3,8 @@ package net.africahomepage.mp3africa.model;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 
-import com.whitecloud.mp3africa.model.GenreTrackListModel;
-import com.whitecloud.mp3africa.model.GenreTrackListModelTracksItem;
+import com.whitecloud.mpafrica.model.GenreTrackListModel;
+import com.whitecloud.mpafrica.model.GenreTrackListModelTracksItem;
 
 
 import net.africahomepage.mp3africa.MusicService;
@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.whitecloud.mp3africa.MPAfricaClient;
+import com.whitecloud.mpafrica.MPAfricaClient;
 
 /**
  * Created by ron on 02/07/16.
